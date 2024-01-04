@@ -35,7 +35,12 @@ deploy-succes-job:
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
-    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME. Application is up and running on port 80.\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
+    - 'response=$(curl -s -w "\\n%{http_code}" -X GET http://localhost:80/weatherforecast)'
+    - 'body=$(echo "$response" | head -n -1)'
+    - 'status_code=$(echo "$response" | tail -n 1)'
+    - echo "Server response body: $body"
+    - echo "Server status code: $status_code"
+    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME. Application is up and running on port 80. Server response code: $status_code. Server response body: $body\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
   tags:
     - docker-runner
   when: on_success
