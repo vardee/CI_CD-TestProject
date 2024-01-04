@@ -42,7 +42,7 @@ deploy-succes-job:
     - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker stop weather || true  # ќстановить старый контейнер, если существует
     - docker rm weather || true    # ”далить старый контейнер, если существует
-    - docker run -d -p 5000:5000 --name weather $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker run -d -p 80:80 --name weather $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   tags:
     - docker-runner
   when: on_success
