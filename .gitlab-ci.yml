@@ -35,6 +35,8 @@ deploy-succes-job:
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
+  tags:
+    - docker-runner
   when: on_success
   after_script:
     - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
@@ -44,6 +46,8 @@ deploy-fail-job:
   environment: production
   script:
     - echo "Deployment failed!"
+  tags:
+    - docker-runner
   when: on_failure
   after_script:
     - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment failed! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
