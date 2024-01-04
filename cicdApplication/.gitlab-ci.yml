@@ -1,0 +1,35 @@
+﻿stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  SOLUTION: "WeatherForecast.sln"
+  PROJECT_NAME: "WeatherForecast"
+  ARTIFACTS_DIR: "artifacts"
+
+before_script:
+  - echo "Setting up environment..."
+  - nuget restore $SOLUTION
+
+build:
+  stage: build
+  script:
+    - msbuild /p:Configuration=Release $SOLUTION
+  artifacts:
+    paths:
+      - $ARTIFACTS_DIR/
+    expire_in: 1 week
+
+test:
+  stage: test
+  script:
+    - echo "Running tests..."
+    - vstest.console.exe $ARTIFACTS_DIR/$PROJECT_NAME.Tests.dll
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying the application to production..."
+  only:
+    - master
