@@ -35,12 +35,6 @@ deploy-succes-job:
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
-    - 'response=$(curl -s -w "\\n%{http_code}" -X GET http://localhost:80/weatherforecast)'
-    - 'body=$(echo "$response" | head -n -1)'
-    - 'status_code=$(echo "$response" | tail -n 1)'
-    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME. Application is up and running on port 80. Server response code: $status_code. Server response body: $body\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
-  tags:
-    - docker-runner
   when: on_success
   after_script:
     - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
@@ -50,8 +44,6 @@ deploy-fail-job:
   environment: production
   script:
     - echo "Deployment failed!"
-  tags:
-    - docker-runner
   when: on_failure
   after_script:
     - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment failed! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
