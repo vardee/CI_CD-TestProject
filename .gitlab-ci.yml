@@ -35,6 +35,7 @@ deploy-succes-job:
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
+    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME. Application is up and running on port 80.\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
   tags:
     - docker-runner
   when: on_success
