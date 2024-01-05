@@ -5,3 +5,13 @@
     - master
   needs:
     - build-job
+
+deploy-fail:
+  extends: .deploy_template
+  stage: deploy
+  script:
+    - echo "Deployment failed!"
+  only:
+    - master
+  needs:
+    - build-job
