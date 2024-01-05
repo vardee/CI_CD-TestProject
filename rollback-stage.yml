@@ -1,6 +1,6 @@
-﻿rollback-job:
-  extends: .rollback_template
+﻿.rollback-job:
   stage: rollback
+  extends: .rollback_template
   rules:
     - exists:
         - deploy-job
