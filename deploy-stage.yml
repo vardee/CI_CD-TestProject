@@ -1,6 +1,8 @@
 ﻿deploy-success:
   extends: .deploy_template
   stage: deploy
+  needs:
+    - build
   only:
     - master
 
@@ -9,5 +11,7 @@ deploy-fail:
   stage: deploy
   script:
     - echo "Deployment failed!"
+  needs:
+    - build
   only:
     - master
