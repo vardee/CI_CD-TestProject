@@ -11,7 +11,7 @@ stages:
     - echo "Compiling the code..."
     - echo "Compile complete."
     - APP_VERSION=v0.$CI_PIPELINE_IID
-    - echo "APP_VERSION: $APP_VERSION"  # ¬ыводим значение переменной в консоль
+    - echo "TAG $APP_VERSION"
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME -t $CI_REGISTRY_IMAGE:$APP_VERSION .
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
@@ -40,7 +40,7 @@ stages:
   script:
     - echo "Rolling back to the previous version..."
     - PREVIOUS_VERSION=$(git rev-parse $(git rev-list --all | grep -B 1 $CI_COMMIT_BEFORE_SHA | head -n 1))
-    - echo "PREVIOUS_VERSION: $PREVIOUS_VERSION"  # ¬ыводим значение переменной в консоль
+    - echo "TAG $APP_VERSION"
     - docker stop $CI_PROJECT_NAME || true
     - docker rm $CI_PROJECT_NAME || true
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
