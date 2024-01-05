@@ -9,8 +9,9 @@
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   tags:
     - docker-runner
+  only:
+    - master
+
 
 build:
   extends: .build_template
-  only:
-    - master
