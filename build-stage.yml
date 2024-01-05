@@ -1,6 +1,7 @@
 ﻿.build_template:
   stage: build
   script:
+    - echo "Building version $APP_VERSION"
     - echo "Compiling the code..."
     - echo "Compile complete."
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME .

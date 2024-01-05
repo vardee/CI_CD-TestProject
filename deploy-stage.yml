@@ -1,8 +1,8 @@
 ﻿.deploy_template:
   stage: deploy
-  environment: production
   script:
     - echo "Deploying application..."
+    - echo "Deploying version $APP_VERSION"
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker stop weather || true  # Остановить старый контейнер, если существует
