@@ -1,6 +1,6 @@
 ﻿rollback-job:
   stage: rollback
-  extends: .rollback-job
+  extends: .rollback_template
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: manual
