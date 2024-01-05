@@ -4,6 +4,7 @@ variables:
 stages:
   - build
   - deploy
+  - rollback
 
 .build_job_template:
   script:
@@ -30,8 +31,23 @@ stages:
     - 'if [ "$CI_JOB_STATUS" == "success" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME\"}" $DISCORD_WEBHOOK; fi'
     - 'if [ "$CI_JOB_STATUS" == "failed" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment failed! Version: $CI_COMMIT_REF_NAME\"}" $DISCORD_WEBHOOK; fi'
 
+.rollback_template:
+  stage: rollback
+  tags:
+    - docker-runner
+  script:
+    - echo "Rolling back to the previous version..."
+    - PREVIOUS_VERSION=$(git describe --abbrev=0 --tags $CI_COMMIT_BEFORE_SHA)
+    - docker stop $CI_PROJECT_NAME || true
+    - docker rm $CI_PROJECT_NAME || true
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:$PREVIOUS_VERSION
+    - docker run -d -p 80:80 --name $CI_PROJECT_NAME $CI_REGISTRY_IMAGE:$PREVIOUS_VERSION
+    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Rollback successful! Version: $CI_COMMIT_REF_NAME\"}" $DISCORD_WEBHOOK; '
+
 include:
   - local: build-stage.yml
   - local: deploy-stage.yml
+  - local: rollback-stage.yml
 
 
