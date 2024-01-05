@@ -3,3 +3,6 @@
   stage: deploy
   only:
     - master
+  needs:
+    - name: build-job
+      job: build-job
