@@ -1,4 +1,5 @@
-﻿.build_template:
+﻿build-job:
+  stage: build
   script:
     - echo "Compiling the code..."
     - echo "Compile complete."
@@ -6,10 +7,4 @@
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   tags:
-    - build-runner
-  only:
-    - master
-
-build:
-  extends: .build_template
-  stage: build
+    - docker-runner
