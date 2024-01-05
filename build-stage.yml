@@ -1,13 +1,11 @@
-﻿.build_job_template:
+﻿.build_template:
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME .
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   tags:
     - docker-runner
 
-build-job:
-  extends: .build_job_template 
+build:
+  extends: .build_template
   stage: build
