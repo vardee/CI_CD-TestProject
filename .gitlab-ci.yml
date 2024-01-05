@@ -32,7 +32,6 @@ stages:
     - 'if [ "$CI_JOB_STATUS" == "failed" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment failed! Version: $CI_COMMIT_REF_NAME\"}" $DISCORD_WEBHOOK; fi'
 
 .rollback_template:
-  stage: rollback
   tags:
     - docker-runner
   script:
