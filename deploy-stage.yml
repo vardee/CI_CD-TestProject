@@ -1,5 +1,5 @@
-﻿# deploy-stage.yml
-deploy-success:
+﻿
+.deploy_template:
   stage: deploy
   script:
     - echo "Deploying application..."
@@ -13,12 +13,17 @@ deploy-success:
     - docker-runner
   after_script:
     - 'if [ "$CI_JOB_STATUS" == "success" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p; fi'
+    - 'if [ "$CI_JOB_STATUS" == "failed" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment failed! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p; fi'
+
+
+deploy-success:
+  extends: .deploy_template
+  when: on_success
+  needs:
+    - build
 
 deploy-fail:
-  stage: deploy
-  script:
-    - echo "Deployment failed!"
-  tags:
-    - docker-runner
-  after_script:
-    - 'if [ "$CI_JOB_STATUS" == "failed" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment failed! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p; fi'
+  extends: .deploy_template
+  when: on_failure
+  needs:
+    - build
