@@ -1,32 +1,16 @@
 ﻿.deploy_template:
   script:
-    - echo "Deploying application..."
-    - echo "Deploying version $APP_VERSION"
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-    - docker stop weather || true  # Остановить старый контейнер, если существует
-    - docker rm weather || true    # Удалить старый контейнер, если существует
-    - docker run -d -p 80:80 --name weather $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker stop weatherforecast || true
+    - docker rm weatherforecast || true
+    - docker run -d -p 80:80 --name weatherforecast $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  after_script:
+    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192451053535379456/IyIJHoq0KwZ1QlmpIkBXdW1ACSazVwoe3lh6RBaNiursmaRaYmM17ZNKBj6T8aBNrkAN'
   tags:
     - docker-runner
-  after_script:
-    - 'if [ "$CI_JOB_STATUS" == "success" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p; fi'
-    - 'if [ "$CI_JOB_STATUS" == "failed" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment failed! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p; fi'
 
 
-deploy-success:
+deploy:
+  extends: .deploy_template
   stage: deploy
-  extends:
-    - .deploy_template
-  when: on_success
-  needs:
-  - build
-
-
-deploy-fail:
-  stage: deploy
-  extends:
-    - .deploy_template
-  when: on_failure
-  needs:
-  - build
