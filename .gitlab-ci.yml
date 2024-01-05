@@ -40,7 +40,8 @@ stages:
   script:
     - echo "Rolling back to the previous version..."
     - PREVIOUS_VERSION=$(git rev-parse $(git rev-list --all | grep -B 1 $CI_COMMIT_BEFORE_SHA | head -n 1))
-    - echo "TAG $APP_VERSION"
+    - echo "TAG APP_VERSION $APP_VERSION"
+    - echo "TAG PREVIOUS_VERSION $PREVIOUS_VERSION"
     - docker stop $CI_PROJECT_NAME || true
     - docker rm $CI_PROJECT_NAME || true
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -49,6 +50,7 @@ stages:
     - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Rollback successful! Version: $PREVIOUS_VERSION\"}" $DISCORD_WEBHOOK; '
   tags:
     - docker-runner
+
 
 
 include:
