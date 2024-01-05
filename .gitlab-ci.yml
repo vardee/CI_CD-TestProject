@@ -43,7 +43,7 @@ stages:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE:$PREVIOUS_VERSION
     - docker run -d -p 80:80 --name $CI_PROJECT_NAME $CI_REGISTRY_IMAGE:$PREVIOUS_VERSION
-    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Rollback successful! Version: $CI_COMMIT_REF_NAME\"}" $DISCORD_WEBHOOK; '
+    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Rollback successful! Version: $PREVIOUS_VERSION\"}" $DISCORD_WEBHOOK; '
 
 include:
   - local: build-stage.yml

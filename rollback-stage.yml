@@ -1,7 +1,6 @@
 ﻿rollback-job:
   extends: .rollback_template
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: manual
-  needs:
-    - deploy-success
+    - exists:
+        - deploy-succes
+      when: on_failure
