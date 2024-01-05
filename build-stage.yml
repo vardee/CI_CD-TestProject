@@ -11,3 +11,6 @@
 build-job:
   stage: build
   extends: .build_job_template
+  script:
+    - echo "Compiling the code..."
+    - echo "Compile complete."
