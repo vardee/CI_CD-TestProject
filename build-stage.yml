@@ -1,5 +1,4 @@
-﻿# build-stage.yml
-build-job:
+﻿build-job:
   stage: build
   script:
     - echo "Compiling the code..."
