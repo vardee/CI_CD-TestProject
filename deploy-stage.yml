@@ -10,6 +10,8 @@
     - docker run -d -p 80:80 --name weather $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   tags:
     - docker-runner
+  needs:
+    - build
   after_script:
     - 'if [ "$CI_JOB_STATUS" == "success" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p; fi'
 
@@ -19,5 +21,7 @@ deploy-fail:
     - echo "Deployment failed!"
   tags:
     - docker-runner
+  needs:
+    - build
   after_script:
     - 'if [ "$CI_JOB_STATUS" == "failed" ]; then curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment failed! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p; fi'
