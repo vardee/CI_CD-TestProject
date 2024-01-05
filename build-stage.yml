@@ -1,7 +1,9 @@
-﻿.build_template:
+﻿stages:
+  - build
+
+build-job:
   stage: build
   script:
-    - echo "Building version $APP_VERSION"
     - echo "Compiling the code..."
     - echo "Compile complete."
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME .
@@ -9,9 +11,3 @@
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   tags:
     - docker-runner
-  only:
-    - master
-
-
-build:
-  extends: .build_template
