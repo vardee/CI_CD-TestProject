@@ -36,7 +36,7 @@ stages:
     - docker-runner
   script:
     - echo "Rolling back to the previous version..."
-    - PREVIOUS_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
+    - PREVIOUS_VERSION=$(git rev-parse $(git rev-list --all | grep -B 1 $CI_COMMIT_BEFORE_SHA | head -n 1))
     - docker stop $CI_PROJECT_NAME || true
     - docker rm $CI_PROJECT_NAME || true
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
