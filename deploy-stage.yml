@@ -3,5 +3,3 @@
   stage: deploy
   only:
     - master
-  needs:
-    - build
