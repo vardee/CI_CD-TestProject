@@ -1,41 +1,8 @@
+variables:
+  APP_VERSION: v0.$CI_PIPELINE_IID
 stages:        
   - build
   - deploy
-
-build-job:    
-  stage: build
-  script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME .
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-  tags:
-    - docker-runner
-deploy-succes-job:
-  stage: deploy
-  environment: production
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-    - docker stop weather || true  # ќстановить старый контейнер, если существует
-    - docker rm weather || true    # ”далить старый контейнер, если существует
-    - docker run -d -p 80:80 --name weather $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-  tags:
-    - docker-runner
-  when: on_success
-  after_script:
-    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment successful! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
-
-deploy-fail-job:
-  stage: deploy
-  environment: production
-  script:
-    - echo "Deployment failed!"
-  tags:
-    - docker-runner
-  when: on_failure
-  after_script:
-    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Deployment failed! Version: $CI_COMMIT_REF_NAME\"}" https://discord.com/api/webhooks/1192450981724696716/W4HTbRqpuMMuF8u9Fm9ydm6MG7-DxfoE6zHrQfwlV4L9sUyCgVeHKFuO9tHKfQf4on4p'
+include:
+  - local: build-stage.yml
+  - local: deploy-stage.yml
