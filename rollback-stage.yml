@@ -2,6 +2,6 @@
   stage: rollback
   extends: .rollback_template
   rules:
-    - exists:
+    - needs:
         - deploy-job
       when: on_failure
