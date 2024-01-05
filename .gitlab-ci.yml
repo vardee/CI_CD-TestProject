@@ -16,6 +16,8 @@ stages:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE:$APP_VERSION
+    - git tag -a $APP_VERSION -m "Release $APP_VERSION"
+    - git push origin $APP_VERSION
   tags:
     - docker-runner
 
