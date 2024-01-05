@@ -1,5 +1,4 @@
 ﻿.build_template:
-  stage: build
   script:
     - echo "Compiling the code..."
     - echo "Compile complete."
@@ -9,8 +8,6 @@
   tags:
     - docker-runner
 
-
-build:
+deploy:
   extends: .build_template
-  only:
-    - master
+  stage: build
