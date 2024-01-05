@@ -1,4 +1,4 @@
-﻿build-job:
+﻿.build_template:
   stage: build
   script:
     - echo "Compiling the code..."
@@ -8,3 +8,9 @@
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   tags:
     - docker-runner
+
+
+build:
+  extends: .build_template
+  only:
+    - master
