@@ -9,5 +9,5 @@
     - docker-runner
 
 build-job:
-  extends: .build_job_template
   stage: build
+  extends: .build_job_template
