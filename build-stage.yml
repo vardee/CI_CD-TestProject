@@ -11,5 +11,3 @@
 build:
   extends: .build_template
   stage: build
-  only:
-    - master
