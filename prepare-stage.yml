@@ -1,0 +1,2 @@
+﻿prepare_job:
+  extends: .prepare_job_template

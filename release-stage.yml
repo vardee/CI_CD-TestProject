@@ -1,0 +1,2 @@
+﻿release_job:
+  extends: .release_job_template
