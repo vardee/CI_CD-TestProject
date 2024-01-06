@@ -3,10 +3,8 @@ variables:
 
 stages:
   - build
-  - prepare
   - deploy
   - rollback
-  - release
 
 .build_job_template:
   script:
@@ -16,43 +14,12 @@ stages:
     - echo "Compile complete."
     - APP_VERSION=v0.$CI_PIPELINE_IID
     - echo "TAG $APP_VERSION"
-    - git tag -a $APP_VERSION -m "Release $APP_VERSION"
-    - git push origin $APP_VERSION
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME -t $CI_REGISTRY_IMAGE:$APP_VERSION .
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE:$APP_VERSION
   tags:
     - docker-runner
-
-.prepare_job_template:
-  stage: prepare
-  script:
-    - 'export RELEASE_NOTES=$(git log --format="- %s" $(git describe --tags --abbrev=0)..HEAD)'
-    - 'echo "$RELEASE_NOTES" > release_notes.env'
-  tags:
-    - deploy-runner
-  artifacts:
-    paths:
-      - release_notes.env
-
-.release_job_template:
-  stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
-  script:
-    - echo "Running release_job for $TAG"
-    - echo $(cat release_notes.env)
-  tags:
-    - deploy-runner
-  release:
-    tag_name: 'v0.$CI_PIPELINE_IID'
-    description: |
-      $(cat release_notes.env)
-
-    ref: '$CI_COMMIT_SHA'
-  needs:
-    - deploy
-    - prepare_job
 
 .deploy_template:
   script:
@@ -93,5 +60,3 @@ include:
   - local: build-stage.yml
   - local: deploy-stage.yml
   - local: rollback-stage.yml
-  - local: prepare-stage.yml
-  - local: release-stage.yml
