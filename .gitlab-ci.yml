@@ -8,6 +8,8 @@ stages:
 
 .build_job_template:
   script:
+    - git config --global user.email "you@example.com"
+    - git config --global user.name "Your Name"
     - echo "Compiling the code..."
     - echo "Compile complete."
     - APP_VERSION=v0.$CI_PIPELINE_IID
@@ -20,6 +22,7 @@ stages:
     - docker push $CI_REGISTRY_IMAGE:$APP_VERSION
   tags:
     - docker-runner
+
 
 .deploy_template:
   script:
