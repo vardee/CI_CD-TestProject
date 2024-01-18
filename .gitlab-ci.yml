@@ -41,18 +41,17 @@ stages:
 .rollback_template:
   script:
     - echo "Rolling back to the previous version..."
-    - ALL_TAGS=($(docker image ls --format '{{.Tag}}' | grep $CI_REGISTRY_IMAGE))
+    - ALL_TAGS=($(docker image ls --format '{{.Repository}}:{{.Tag}}' | grep $CI_REGISTRY_IMAGE))
     - SORTED_TAGS=($(echo "${ALL_TAGS[@]}" | tr ' ' '\n' | sort -V -r))
     - PREVIOUS_VERSION=${SORTED_TAGS[1]}
     - echo "TAG APP_VERSION $APP_VERSION"
     - echo "TAG PREVIOUS_VERSION $PREVIOUS_VERSION"
-    - DOCKER_IMAGE_NAME=$CI_REGISTRY_IMAGE:$PREVIOUS_VERSION
     - docker stop $CI_PROJECT_NAME || true
     - docker rm $CI_PROJECT_NAME || true
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull $DOCKER_IMAGE_NAME || true
-    - docker run -d -p 80:80 --name $CI_PROJECT_NAME $DOCKER_IMAGE_NAME
-    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Rollback successful! Version: $DOCKER_IMAGE_NAME\"}" $DISCORD_WEBHOOK; '
+    - docker pull $PREVIOUS_VERSION || true
+    - docker run -d -p 80:80 --name $CI_PROJECT_NAME $PREVIOUS_VERSION
+    - 'curl -X POST -H "Content-type: application/json" --data "{\"content\":\"Rollback successful! Version: $PREVIOUS_VERSION\"}" $DISCORD_WEBHOOK; '
   tags:
     - docker-runner
 
