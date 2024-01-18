@@ -20,6 +20,10 @@ stages:
     - docker push $CI_REGISTRY_IMAGE:$APP_VERSION
   tags:
     - docker-runner
+  artifacts:
+    paths:
+      - dist/
+
 
 .deploy_template:
   script:
